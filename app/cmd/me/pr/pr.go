@@ -1,4 +1,4 @@
-package list
+package pr
 
 import (
 	"context"
@@ -13,9 +13,8 @@ import (
 )
 
 var Cmd = &cobra.Command{
-	Use:     "list",
-	Short:   "List pull requests",
-	Aliases: []string{"ls"},
+	Use:   "pr",
+	Short: "List your pull requests",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		state := bbclient.OPEN
 		params := bbclient.GetPullrequestsSelectedUserParams{
@@ -40,7 +39,7 @@ var Cmd = &cobra.Command{
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', tabwriter.Debug)
 		for i := 0; i < len(prs); i++ {
 			pr := (prs)[i]
-			_, err := fmt.Fprintln(w, fmt.Sprintf("%v\t  %s", *pr.Id, *pr.Title))
+			_, err := fmt.Fprintln(w, fmt.Sprintf("%v\t  %s\t  %s -> %s\t  %s", *pr.Id, *pr.Source.Repository.Name, *pr.Source.Branch.Name, *pr.Destination.Branch.Name, *pr.Title))
 			if err != nil {
 				return err
 			}
