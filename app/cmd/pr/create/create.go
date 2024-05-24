@@ -16,10 +16,9 @@ import (
 var Cmd = &cobra.Command{
 	Use:   "create",
 	Short: "create a pull request",
+	Long:  "usage: pr create origin-branch destination-branch",
+	Args:  cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 2 {
-			return errors.New("usage: pr create origin-branch destination-branch")
-		}
 		origin := args[0]
 		dest := args[1]
 
