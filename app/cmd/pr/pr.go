@@ -1,7 +1,9 @@
 package pr
 
 import (
+	"cli/app/cmd/pr/create"
 	"cli/app/cmd/pr/list"
+	"cli/app/cmd/pr/rm"
 	"fmt"
 	"github.com/spf13/cobra"
 )
@@ -18,4 +20,6 @@ var Cmd = &cobra.Command{
 
 func init() {
 	Cmd.AddCommand(list.Cmd)
+	Cmd.AddCommand(rm.Cmd)
+	Cmd.AddCommand(create.Cmd)
 }
