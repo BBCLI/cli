@@ -13,7 +13,7 @@ var rootCmd = &cobra.Command{
 	Short: "BBC is a Bitbucket Cloud CLI",
 	Long:  "A fast and flexible CLI for Bitbucket Cloud, so you don't have to deal with the shitty UI",
 	Run: func(cmd *cobra.Command, args []string) {
-		// Do Stuff Here
+		println("Welcome to BBCLI, please use the --help flag to see the available commands")
 	},
 }
 

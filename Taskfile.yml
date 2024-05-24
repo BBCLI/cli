@@ -5,5 +5,16 @@ tasks:
   build:
     desc: "Build the project"
     cmds:
-      - go generate ./...
       - go build -o bbcli
+    deps:
+      - generate
+
+  generate:
+    desc: "Generate code"
+    cmds:
+      - go generate ./...
+    sources:
+      - app/bbclient/bbclient*
+      - app/bbclient/config.yaml
+    generates:
+      - app/bbclient/*.gen.go
