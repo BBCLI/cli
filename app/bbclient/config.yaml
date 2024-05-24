@@ -1,7 +1,5 @@
 package: bbclient
 generate:
-  chi-server: true
-  strict-server: true
+  client: true
   models: true
-  embedded-spec: true
 output: bbclient.gen.go
