@@ -23,7 +23,7 @@ type Config struct {
 	ReviewerGroups []ReviewerGroup `yaml:"reviewer_groups"`
 }
 
-func GetConfig() Config {
+func GetConfig() *Config {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
@@ -38,10 +38,10 @@ func GetConfig() Config {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return config
+	return &config
 }
 
-func SaveConfig(config Config) error {
+func SaveConfig(config *Config) error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return err
