@@ -15,7 +15,7 @@ func GetToken() (string, error) {
 		return "", err
 	}
 	fmt.Println(file)
-	var token = string(file)
+	token := string(file)
 	if token == "" {
 		return "", errors.New("no token")
 	}
