@@ -1,0 +1,5 @@
+package: bbclient
+generate:
+  client: true
+  models: true
+output: bbclient.gen.go
