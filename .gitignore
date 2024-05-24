@@ -23,5 +23,6 @@ go.work.sum
 
 .idea
 cli
+bbcli
 
 **/*.gen.go
