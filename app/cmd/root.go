@@ -1,16 +1,18 @@
 package cmd
 
 import (
-	"cli/app/cmd/pr"
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
+
+	"cli/app/cmd/pr"
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "bbc",
-	Short: "BBC is a bitbucket cloud cli",
-	Long:  `A Fast and Flexible CLI for bitbucket cloud so you dont have to deal with the shitty UI`,
+	Short: "BBC is a Bitbucket Cloud CLI",
+	Long:  "A fast and flexible CLI for Bitbucket Cloud, so you don't have to deal with the shitty UI",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
 	},

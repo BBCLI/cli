@@ -1,10 +1,12 @@
 package pr
 
 import (
+	"fmt"
+
 	"cli/app/cmd/pr/create"
 	"cli/app/cmd/pr/list"
 	"cli/app/cmd/pr/rm"
-	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
