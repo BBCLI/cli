@@ -8,18 +8,18 @@ import (
 )
 
 type AuthConfig struct {
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type ReviewerGroup struct {
-	BranchNameRegex *regexp.Regexp `yaml:"branch_name_regex,omitempty"`
-	Reviewers       []string       `yaml:"reviewers"`
+	BranchNameRegex *regexp.Regexp `json:"branch_name_regex,omitempty"`
+	Reviewers       []string       `json:"reviewers"`
 }
 
 type Config struct {
-	Authorization  AuthConfig      `yaml:"authorization"`
-	ReviewerGroups []ReviewerGroup `yaml:"reviewer_groups"`
+	Authorization  AuthConfig      `json:"authorization"`
+	ReviewerGroups []ReviewerGroup `json:"reviewer_groups"`
 }
 
 func GetConfig() (*Config, error) {
@@ -27,7 +27,7 @@ func GetConfig() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	file := path.Join(homeDir, ".config", "bbcli.yaml")
+	file := path.Join(homeDir, ".config", "bbcli.json")
 	data, err := os.ReadFile(file)
 	if err != nil {
 		return &Config{}, nil
@@ -45,7 +45,7 @@ func SaveConfig(config *Config) error {
 	if err != nil {
 		return err
 	}
-	file := path.Join(homeDir, ".config", "bbcli.yaml")
+	file := path.Join(homeDir, ".config", "bbcli.json")
 	data, err := json.Marshal(config)
 	if err != nil {
 		return err

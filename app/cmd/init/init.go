@@ -11,7 +11,7 @@ import (
 
 var Cmd = &cobra.Command{
 	Use:   "init",
-	Short: "Enter your bitbucket cli token",
+	Short: "Configure your access",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		config, err := config2.GetConfig()

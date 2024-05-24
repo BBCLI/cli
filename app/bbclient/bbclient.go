@@ -20,15 +20,14 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if config.Authorization.Username == "" || config.Authorization.Password == "" {
-		log.Fatal("Please run 'bbc init' to initialize your Bitbucket Cloud CLI")
-	}
 	BbClient, err = NewClientWithResponses("https://api.bitbucket.org/2.0", WithHTTPClient(&hc), WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
+		if config.Authorization.Username == "" || config.Authorization.Password == "" {
+			log.Fatal("please run 'bbcli init' to initialize your Bitbucket Cloud CLI")
+		}
 		req.Header.Add("Authorization", "Basic "+b64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", config.Authorization.Username, config.Authorization.Password))))
 		return nil
 	}))
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
