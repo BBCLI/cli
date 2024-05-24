@@ -35,9 +35,9 @@ func SetToken(token string) error {
 	}
 	defer file.Close()
 
-	_, writeErr := file.Write([]byte(token))
-	if writeErr != nil {
-		return writeErr
+	_, err = file.Write([]byte(token))
+	if err != nil {
+		return err
 	}
 	return nil
 }
