@@ -1,8 +1,8 @@
 package cmd
 
 import (
+	initialize "cli/app/cmd/init"
 	"log"
-
 	"github.com/spf13/cobra"
 
 	"cli/app/cmd/pr"
@@ -19,6 +19,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(pr.Cmd)
+	rootCmd.AddCommand(initialize.Cmd)
 }
 
 func Execute() {
