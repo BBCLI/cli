@@ -39,7 +39,7 @@ var Cmd = &cobra.Command{
 
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', tabwriter.Debug)
 		for i := 0; i < len(prs); i++ {
-			pr := (prs)[i]
+			pr := prs[i]
 			_, err := fmt.Fprintln(w, fmt.Sprintf("%v\t  %s", *pr.Id, *pr.Title))
 			if err != nil {
 				return err

@@ -40,7 +40,7 @@ var Cmd = &cobra.Command{
 }
 
 func getLine(name string) (*string, error) {
-	fmt.Println("Please enter your " + name + ":")
+	fmt.Print("Please enter your " + name + ": ")
 	var ret string
 	_, err := fmt.Scanln(&ret)
 	if err != nil {
