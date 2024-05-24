@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "cli/app/cmd"
 
 func main() {
-	fmt.Println("windows is bloated")
+	cmd.Execute()
 }
