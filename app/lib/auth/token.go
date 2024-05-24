@@ -2,17 +2,21 @@ package auth
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 )
 
 func GetToken() (string, error) {
-	var file, err = os.ReadFile("~/.config/bbcli.token")
+	homeDir, err := os.UserHomeDir()
+	tokenFilePath := filepath.Join(homeDir, ".config", "bbcli.token")
+	file, err := os.ReadFile(tokenFilePath)
 	if err != nil {
 		return "", err
 	}
+	fmt.Println(file)
 	var token = string(file)
-	if token != "" {
+	if token == "" {
 		return "", errors.New("no token")
 	}
 	return token, nil

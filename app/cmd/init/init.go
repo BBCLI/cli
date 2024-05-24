@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"cli/app/app/auth"
+	"cli/app/lib/auth"
 )
 
 var Cmd = &cobra.Command{
