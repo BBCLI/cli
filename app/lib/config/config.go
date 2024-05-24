@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"log"
 	"os"
 	"path"
 	"regexp"
@@ -23,22 +22,22 @@ type Config struct {
 	ReviewerGroups []ReviewerGroup `yaml:"reviewer_groups"`
 }
 
-func GetConfig() *Config {
+func GetConfig() (*Config, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	file := path.Join(homeDir, ".config", "bbcli.yaml")
 	data, err := os.ReadFile(file)
 	if err != nil {
-		log.Fatal(err)
+		return &Config{}, nil
 	}
 	var config Config
 	err = json.Unmarshal(data, &config)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	return &config
+	return &config, nil
 }
 
 func SaveConfig(config *Config) error {
