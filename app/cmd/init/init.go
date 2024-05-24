@@ -6,25 +6,47 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"cli/app/lib/auth"
+	config2 "cli/app/lib/config"
 )
 
 var Cmd = &cobra.Command{
 	Use:   "init",
-	Short: "Enter your bitbucket cli token",
+	Short: "Configure your access",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		fmt.Println("Please enter your token:")
-		token := ""
-		_, err := fmt.Scanln(&token)
+		config, err := config2.GetConfig()
 		if err != nil {
-			fmt.Print("Error Reading your token")
 			return
 		}
-		log.Print("Your Token: ", token)
-		err = auth.SetToken(token)
+
+		username, err := getLine("username")
 		if err != nil {
-			fmt.Println("Error Setting your Token!", err)
+			return
+		}
+		pass, err := getLine("app password")
+		if err != nil {
+			return
+		}
+
+		config.Authorization.Username = *username
+		config.Authorization.Password = *pass
+
+		err = config2.SaveConfig(config)
+
+		if err != nil {
+			fmt.Println("Error saving the config!", err)
 		}
 	},
+}
+
+func getLine(name string) (*string, error) {
+	fmt.Println("Please enter your " + name + ":")
+	var ret string
+	_, err := fmt.Scanln(&ret)
+	if err != nil {
+		fmt.Println("Error Reading your " + name)
+		return nil, err
+	}
+	log.Println("Your "+name+": ", ret)
+	return &ret, nil
 }

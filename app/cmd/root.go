@@ -1,16 +1,18 @@
 package cmd
 
 import (
-	initialize "cli/app/cmd/init"
 	"log"
+
 	"github.com/spf13/cobra"
 
+	initialize "cli/app/cmd/init"
+	"cli/app/cmd/me"
 	"cli/app/cmd/pr"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "bbc",
-	Short: "BBC is a Bitbucket Cloud CLI",
+	Use:   "bbcli",
+	Short: "BBCLI is a BitBucket Cloud CLI",
 	Long:  "A fast and flexible CLI for Bitbucket Cloud, so you don't have to deal with the shitty UI",
 	Run: func(cmd *cobra.Command, args []string) {
 		println("Welcome to BBCLI, please use the --help flag to see the available commands")
@@ -18,6 +20,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
+	rootCmd.AddCommand(me.Cmd)
 	rootCmd.AddCommand(pr.Cmd)
 	rootCmd.AddCommand(initialize.Cmd)
 }
