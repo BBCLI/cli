@@ -13,10 +13,8 @@ import (
 var Cmd = &cobra.Command{
 	Use:   "pr",
 	Short: "PR related stuff",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Print("Prs index")
-
-		return nil
 	},
 }
 
