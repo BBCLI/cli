@@ -9,9 +9,7 @@ import (
 var Cmd = &cobra.Command{
 	Use:   "list",
 	Short: "list pull requests",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Print("List of Prs")
-
-		return nil
 	},
 }
