@@ -22,9 +22,9 @@ var Cmd = &cobra.Command{
 			return
 		}
 		log.Print("Your Token: ", token)
-		setErr := auth.SetToken(token)
-		if setErr != nil {
-			fmt.Println("Error Setting your Token!", setErr)
+		err = auth.SetToken(token)
+		if err != nil {
+			fmt.Println("Error Setting your Token!", err)
 		}
 	},
 }
