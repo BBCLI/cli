@@ -3,44 +3,40 @@ package list
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 
 	"cli/app/bbclient"
-	config2 "cli/app/lib/config"
+	"cli/app/lib/git"
 )
 
 var Cmd = &cobra.Command{
 	Use:     "list",
-	Short:   "List pull requests",
+	Short:   "list pull requests",
 	Aliases: []string{"ls"},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		state := bbclient.OPEN
-		params := bbclient.GetPullrequestsSelectedUserParams{
-			State: (*bbclient.GetPullrequestsSelectedUserParamsState)(&state),
+		params := bbclient.GetRepositoriesWorkspaceRepoSlugPullrequestsParams{
+			State: &state,
 		}
-		config, err := config2.GetConfig()
+		workspace, repo, err := git.GetGitRemoteDetails()
+		if err != nil {
+			log.Fatal("No Workspace Or Repo Found! Please Check If are in a Repo that has a remote origin in bbc")
+		}
+		res, err := bbclient.BbClient.GetRepositoriesWorkspaceRepoSlugPullrequestsWithResponse(context.TODO(), workspace, repo, &params)
 		if err != nil {
 			return err
-		}
-		if config.Authorization.Username == "" || config.Authorization.Password == "" {
-			return fmt.Errorf("please run 'bbcli init' to initialize your Bitbucket Cloud CLI")
-		}
-		res, err := bbclient.BbClient.GetPullrequestsSelectedUserWithResponse(context.TODO(), config.Authorization.Username, &params)
-		if err != nil {
-			return err
-		}
-		if res.JSON200 == nil {
-			return fmt.Errorf("couldn't fetch PRs")
 		}
 		prs := *res.JSON200.Values
 
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', tabwriter.Debug)
+		fmt.Fprintln(w, fmt.Sprintf("%v\t  %s\t %s\t %s", "id", "title", "commentCount", "repository"))
 		for i := 0; i < len(prs); i++ {
-			pr := prs[i]
-			_, err := fmt.Fprintln(w, fmt.Sprintf("%v\t  %s", *pr.Id, *pr.Title))
+			pr := (prs)[i]
+			_, err := fmt.Fprintln(w, fmt.Sprintf("%v\t  %s\t %v\t %s ", *pr.Id, *pr.Title, *pr.CommentCount, *pr.Source.Repository.Name))
 			if err != nil {
 				return err
 			}
