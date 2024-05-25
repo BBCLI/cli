@@ -2,8 +2,9 @@ package list
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/spf13/cobra"
 
@@ -26,12 +27,10 @@ var Cmd = &cobra.Command{
 			log.Fatal("No Workspace Or Repo Found! Please Check If are in a Repo that has a remote origin in bbc")
 		}
 		res, err := bbclient.BbClient.GetRepositoriesWorkspaceRepoSlugPullrequestsWithResponse(context.TODO(), workspace, repo, &params)
-		if err != nil {
-			return err
+		if err != nil || res.StatusCode() != http.StatusOK {
+			log.Fatal(fmt.Sprintf("Error From The Bitbucket Cloud Api! Status: %v", res.StatusCode()))
 		}
-		if res.StatusCode() != 200 {
-			return errors.New("couldn't fetch PRs")
-		}
+
 		err = format.Prs(res.JSON200.Values)
 		if err != nil {
 			return err
