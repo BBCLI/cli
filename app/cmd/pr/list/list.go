@@ -29,7 +29,6 @@ var Cmd = &cobra.Command{
 		res, err := bbclient.BbClient.GetRepositoriesWorkspaceRepoSlugPullrequestsWithResponse(context.TODO(), workspace, repo, &params)
 		if err != nil || res.StatusCode() != http.StatusOK {
 			log.Fatal(fmt.Sprintf("Error From The Bitbucket Cloud Api! Status: %v", res.StatusCode()))
-			return nil
 		}
 
 		err = format.Prs(res.JSON200.Values)
