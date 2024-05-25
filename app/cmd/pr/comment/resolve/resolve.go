@@ -15,6 +15,7 @@ import (
 var Cmd = &cobra.Command{
 	Use:   "resolve",
 	Short: "resolve comment on PR",
+	Long:  "usage: bbc pr comment resolve <pr-id> <comment-id>",
 	Args:  cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		prId, err := strconv.Atoi(args[0])

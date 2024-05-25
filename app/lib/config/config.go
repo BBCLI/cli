@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"os"
 	"path"
-	"regexp"
 )
 
 type AuthConfig struct {
@@ -12,14 +11,8 @@ type AuthConfig struct {
 	Password string `json:"password"`
 }
 
-type ReviewerGroup struct {
-	BranchNameRegex *regexp.Regexp `json:"branch_name_regex,omitempty"`
-	Reviewers       []string       `json:"reviewers"`
-}
-
 type Config struct {
-	Authorization  AuthConfig      `json:"authorization"`
-	ReviewerGroups []ReviewerGroup `json:"reviewer_groups"`
+	Authorization AuthConfig `json:"authorization"`
 }
 
 func GetConfig() (*Config, error) {

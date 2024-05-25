@@ -19,7 +19,7 @@ import (
 var Cmd = &cobra.Command{
 	Use:     "create",
 	Short:   "create a pull request",
-	Long:    "usage: pr create origin-branch destination-branch",
+	Long:    "usage: pr create <origin-branch> <destination-branch>",
 	Args:    cobra.ExactArgs(2),
 	Aliases: []string{"new"},
 	RunE: func(cmd *cobra.Command, args []string) error {

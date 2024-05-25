@@ -26,5 +26,6 @@ go.work.sum
 cli
 bbcli
 bbc
+bbc-linux
 
 **/*.gen.go
