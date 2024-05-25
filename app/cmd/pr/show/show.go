@@ -88,12 +88,17 @@ var Cmd = &cobra.Command{
 				isCommentOnFile = true
 				line = *inline.To
 			}
+			resolvedText := "resolved"
+			if comment.Resolution == nil {
+				resolvedText = "pending"
+			}
+
 			if isCommentOnFile {
-				fmt.Printf("%s commented on %s:%v:\n", *comment.User.DisplayName, inline.Path, line)
+				fmt.Printf("%s commented on %s:%v (%s) :\n", *comment.User.DisplayName, inline.Path, line, resolvedText)
 				fmt.Printf("%s\n", *comment.Content.Raw)
 				continue
 			}
-			fmt.Printf("%s commented:\n", *comment.User.DisplayName)
+			fmt.Printf("%s commented (%s) :\n", *comment.User.DisplayName, resolvedText)
 			fmt.Printf("%s\n", *comment.Content.Raw)
 			fmt.Printf("-------------------------------------------\n")
 		}
