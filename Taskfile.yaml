@@ -9,6 +9,13 @@ tasks:
     deps:
       - generate
 
+  build-linux:
+    desc: "Build the project for Linux"
+    cmds:
+      - GOOS=linux GOARCH=amd64 go build -o bbc-linux
+    deps:
+      - generate
+
   generate:
     desc: "Generate code"
     cmds:
