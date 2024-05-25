@@ -46,6 +46,16 @@ func GetGitRemoteDetails() (workspace string, repo string, err error) {
 	return workspace, repo, nil
 }
 
+func GetGitAbsolutePath() (string, error) {
+	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
+	output, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+	ret, _ := strings.CutSuffix(string(output), "\n")
+	return ret, nil
+}
+
 func promptForWorkspaceAndRepo() (string, string) {
 	var workspace, repo string
 	fmt.Print("Enter workspace: ")
