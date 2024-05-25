@@ -25,10 +25,7 @@ var Cmd = &cobra.Command{
 			return err
 		}
 
-		prId = 1197
 		workspace, repo, err := git.GetGitRemoteDetails()
-		workspace = "check24"
-		repo = "tippspiel"
 		if err != nil {
 			return err
 		}
@@ -67,6 +64,8 @@ var Cmd = &cobra.Command{
 		if err != nil || commentResponse.StatusCode() != http.StatusOK {
 			return errors.New("error on bbc api")
 		}
+
+		fmt.Println(string(commentResponse.Body))
 
 		fmt.Printf("from %s to %s\n", *prResponse.JSON200.Source.Branch.Name, *prResponse.JSON200.Destination.Branch.Name)
 		fmt.Printf("Title: %s\n", *prResponse.JSON200.Title)

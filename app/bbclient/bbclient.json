@@ -30323,9 +30323,6 @@
       "comment": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/object"
-          },
-          {
             "type": "object",
             "title": "Comment",
             "description": "The base type for all comments. This type should be considered abstract. Each of the \"commentable\" resources defines its own subtypes (e.g. `issue_comment`).",
