@@ -35,7 +35,7 @@ var Cmd = &cobra.Command{
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', tabwriter.Debug)
 		fmt.Fprintln(w, fmt.Sprintf("%v\t  %s\t %s\t %s", "id", "title", "commentCount", "repository"))
 		for i := 0; i < len(prs); i++ {
-			pr := (prs)[i]
+			pr := prs[i]
 			_, err := fmt.Fprintln(w, fmt.Sprintf("%v\t  %s\t %v\t %s ", *pr.Id, *pr.Title, *pr.CommentCount, *pr.Source.Repository.Name))
 			if err != nil {
 				return err
