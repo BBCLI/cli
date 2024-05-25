@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -12,6 +13,7 @@ import (
 
 	"cli/app/bbclient"
 	"cli/app/lib/git"
+	"cli/app/lib/user"
 )
 
 var Cmd = &cobra.Command{
@@ -23,6 +25,17 @@ var Cmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		origin := args[0]
 		dest := args[1]
+
+		currentUser, err := user.CurrentUser()
+		if err != nil {
+			log.Fatal("Error while fetching user")
+			return nil
+		}
+
+		workspace, repo, err := git.GetGitRemoteDetails()
+		if err != nil {
+			return err
+		}
 
 		defaultTitle := origin + " to " + dest
 		fmt.Printf("Please enter PR title ('%s'): ", defaultTitle)
@@ -36,9 +49,32 @@ var Cmd = &cobra.Command{
 		if title == "" {
 			title = defaultTitle
 		}
+		//default reviewers(repo)
+		fmt.Printf("Do you want to add the default reviewers from the repo(y/n): ")
+		in = bufio.NewReader(os.Stdin)
+		desiscion, err := in.ReadString('\n')
+		desiscion = strings.TrimSpace(desiscion)
+		var reviewers []bbclient.Account
+		if desiscion == "y" || desiscion == "yes" {
+			res, err := bbclient.BbClient.GetRepositoriesWorkspaceRepoSlugDefaultReviewersWithResponse(context.TODO(),
+				workspace, repo)
+			if err != nil || res.StatusCode() != 200 {
+				return errors.New("Error getting Reviewers from bitbucket url")
+			}
+			reviewers = *res.JSON200.Values
+		}
+		var reviewersWithoutCurrentUser []bbclient.Account
+		reviewersWithoutCurrentUser = make([]bbclient.Account, 0)
+		//remove user
+		for i := range reviewers {
+			if *reviewers[i].Uuid != *currentUser.Uuid {
+				reviewersWithoutCurrentUser = append(reviewersWithoutCurrentUser, reviewers[i])
+			}
+		}
 
 		req := bbclient.PostRepositoriesWorkspaceRepoSlugPullrequestsJSONRequestBody{
-			Title: &title,
+			Title:     &title,
+			Reviewers: &reviewersWithoutCurrentUser,
 			Destination: &bbclient.PullrequestEndpoint{
 				Branch: &struct {
 					DefaultMergeStrategy *string                                              `json:"default_merge_strategy,omitempty"`
@@ -59,17 +95,12 @@ var Cmd = &cobra.Command{
 			},
 		}
 
-		workspace, repo, err := git.GetGitRemoteDetails()
-		if err != nil {
-			return err
-		}
-
 		res, err := bbclient.BbClient.PostRepositoriesWorkspaceRepoSlugPullrequestsWithResponse(context.TODO(), workspace, repo, req)
 
 		if err != nil || res.StatusCode() != 201 {
-			return errors.New("an error occurred")
+			return errors.New(fmt.Sprintf("Error while creating requesting the bbc api! status: %v", res.StatusCode()))
 		}
-
+		fmt.Println("Pr Created!")
 		return nil
 	},
 }
