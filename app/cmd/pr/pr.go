@@ -5,6 +5,7 @@ import (
 
 	"cli/app/cmd/pr/approve"
 	"cli/app/cmd/pr/create"
+	"cli/app/cmd/pr/diff"
 	"cli/app/cmd/pr/list"
 	"cli/app/cmd/pr/merge"
 	"cli/app/cmd/pr/rm"
@@ -26,4 +27,5 @@ func init() {
 	Cmd.AddCommand(create.Cmd)
 	Cmd.AddCommand(approve.Cmd)
 	Cmd.AddCommand(merge.Cmd)
+	Cmd.AddCommand(diff.Cmd)
 }

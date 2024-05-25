@@ -1,42 +1,40 @@
-package list
+package diff
 
 import (
 	"context"
 	"errors"
 	"log"
+	"strconv"
 
 	"github.com/spf13/cobra"
 
 	"cli/app/bbclient"
-	"cli/app/lib/format"
 	"cli/app/lib/git"
 )
 
 var Cmd = &cobra.Command{
-	Use:     "list",
-	Short:   "list pull requests",
+	Use:     "diff",
+	Short:   "show diff for pull request",
 	Aliases: []string{"ls"},
+	Args:    cobra.ExactArgs(1),
+	Long:    "usage: bbc pr diff <pullrequest-id>",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		state := bbclient.OPEN
-		params := bbclient.GetRepositoriesWorkspaceRepoSlugPullrequestsParams{
-			State: &state,
-		}
 		workspace, repo, err := git.GetGitRemoteDetails()
 		if err != nil {
 			log.Fatal("No Workspace Or Repo Found! Please Check If are in a Repo that has a remote origin in bbc")
 		}
-		res, err := bbclient.BbClient.GetRepositoriesWorkspaceRepoSlugPullrequestsWithResponse(context.TODO(), workspace, repo, &params)
+		prId, err := strconv.Atoi(args[0])
 		if err != nil {
 			return err
 		}
-		if res.StatusCode() != 200 {
-			return errors.New("couldn't fetch PRs")
-		}
-		err = format.Prs(res.JSON200.Values)
+		diff, err := bbclient.BbClient.GetRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdDiffWithResponse(context.TODO(), workspace, repo, prId)
 		if err != nil {
 			return err
 		}
-
+		if diff.StatusCode() != 200 {
+			return errors.New("couldn't fetch PR")
+		}
+		log.Println(string(diff.Body))
 		return nil
 	},
 }
