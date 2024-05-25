@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"cli/app/bbclient"
+	"cli/app/cmd/pr"
 	config2 "cli/app/lib/config"
 	"cli/app/lib/format"
 )
@@ -41,4 +42,8 @@ var Cmd = &cobra.Command{
 
 		return nil
 	},
+}
+
+func init() {
+	Cmd.AddCommand(pr.Cmd)
 }
