@@ -15,7 +15,7 @@ import (
 var Cmd = &cobra.Command{
 	Use:   "merge",
 	Short: "merge pull request",
-	Long:  "usage: bbcli pr merge <pullrequest-id>",
+	Long:  "usage: bbc pr merge <pullrequest-id>",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		prId, err := strconv.Atoi(args[0])

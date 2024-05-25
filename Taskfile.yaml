@@ -5,7 +5,7 @@ tasks:
   build:
     desc: "Build the project"
     cmds:
-      - go build -o bbcli
+      - go build -o bbc
     deps:
       - generate
 
