@@ -24,7 +24,7 @@ var Cmd = &cobra.Command{
 			return err
 		}
 		if config.Authorization.Username == "" || config.Authorization.Password == "" {
-			return fmt.Errorf("please run 'bbcli init' to initialize your Bitbucket Cloud CLI")
+			return fmt.Errorf("please run 'bbc init' to initialize your Bitbucket Cloud CLI")
 		}
 		res, err := bbclient.BbClient.GetPullrequestsSelectedUserWithResponse(context.TODO(), config.Authorization.Username, &params)
 		if err != nil {
