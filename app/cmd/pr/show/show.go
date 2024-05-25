@@ -14,6 +14,16 @@ import (
 	"cli/app/lib/git"
 )
 
+type PRComment struct {
+	Id            int
+	Base          bool
+	Comment       string
+	Resolved      bool
+	Path          *string
+	Commenter     string
+	ChildComments []*PRComment
+}
+
 var Cmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show pull request details",
@@ -65,7 +75,82 @@ var Cmd = &cobra.Command{
 			return errors.New("error on bbc api")
 		}
 
-		fmt.Println(string(commentResponse.Body))
+		repoPath, err := git.GetGitAbsolutePath()
+		if err != nil {
+			return err
+		}
+
+		inlineComments := make(map[int]*PRComment)
+		comments := make(map[int]*PRComment)
+		for len(comments)+len(inlineComments) < len(*commentResponse.JSON200.Values) {
+			for _, comment := range *commentResponse.JSON200.Values {
+				if comment.Inline != nil {
+					if comment.Parent != nil {
+						if _, ok := inlineComments[*comment.Parent.Id]; ok {
+							if _, ok := inlineComments[*comment.Id]; !ok {
+								p := path.Join(repoPath, comment.Inline.Path) + fmt.Sprintf(":%v", *comment.Inline.To)
+								inlineComments[*comment.Id] = &PRComment{
+									Id:            *comment.Id,
+									Base:          comment.Parent == nil,
+									Comment:       *comment.Content.Raw,
+									Resolved:      comment.Resolution != nil,
+									Path:          &p,
+									Commenter:     *comment.User.DisplayName,
+									ChildComments: make([]*PRComment, 0),
+								}
+							}
+							inlineComments[*comment.Parent.Id].ChildComments = append(inlineComments[*comment.Parent.Id].ChildComments, inlineComments[*comment.Id])
+						} else {
+							continue
+						}
+					}
+					if _, ok := inlineComments[*comment.Id]; !ok {
+						p := path.Join(repoPath, comment.Inline.Path) + fmt.Sprintf(":%v", *comment.Inline.To)
+						inlineComments[*comment.Id] = &PRComment{
+							Id:            *comment.Id,
+							Base:          comment.Parent == nil,
+							Comment:       *comment.Content.Raw,
+							Resolved:      comment.Resolution != nil,
+							Path:          &p,
+							Commenter:     *comment.User.DisplayName,
+							ChildComments: make([]*PRComment, 0),
+						}
+					}
+				} else {
+					if _, ok := comments[*comment.Id]; !ok {
+						if comment.Parent != nil {
+							if _, ok := comments[*comment.Parent.Id]; ok {
+								if _, ok := comments[*comment.Id]; !ok {
+									comments[*comment.Id] = &PRComment{
+										Id:            *comment.Id,
+										Base:          comment.Parent == nil,
+										Comment:       *comment.Content.Raw,
+										Resolved:      comment.Resolution != nil,
+										Path:          nil,
+										Commenter:     *comment.User.DisplayName,
+										ChildComments: make([]*PRComment, 0),
+									}
+								}
+								comments[*comment.Parent.Id].ChildComments = append(comments[*comment.Parent.Id].ChildComments, comments[*comment.Id])
+							} else {
+								continue
+							}
+						}
+						if _, ok := comments[*comment.Id]; !ok {
+							comments[*comment.Id] = &PRComment{
+								Id:            *comment.Id,
+								Base:          comment.Parent == nil,
+								Comment:       *comment.Content.Raw,
+								Resolved:      comment.Resolution != nil,
+								Path:          nil,
+								Commenter:     *comment.User.DisplayName,
+								ChildComments: make([]*PRComment, 0),
+							}
+						}
+					}
+				}
+			}
+		}
 
 		fmt.Printf("from %s to %s\n", *prResponse.JSON200.Source.Branch.Name, *prResponse.JSON200.Destination.Branch.Name)
 		fmt.Printf("Title: %s\n", *prResponse.JSON200.Title)
@@ -80,33 +165,49 @@ var Cmd = &cobra.Command{
 
 		fmt.Printf("Comments: \n")
 
-		for _, comment := range *commentResponse.JSON200.Values {
-			isCommentOnFile := false
-			inline := comment.Inline
-			line := 0
-			if inline != nil {
-				isCommentOnFile = true
-				line = *inline.To
-			}
-			resolvedText := "resolved"
-			if comment.Resolution == nil {
-				resolvedText = "pending"
-			}
-
-			if isCommentOnFile {
-				repoPath, err := git.GetGitAbsolutePath()
-				if err != nil {
-					return err
-				}
-				path := path.Join(repoPath, inline.Path)
-				fmt.Printf("%s commented on %s:%v (%s) :\n", *comment.User.DisplayName, path, line, resolvedText)
-				fmt.Printf("%s\n", *comment.Content.Raw)
+		fmt.Println("General Comments: ")
+		for _, comment := range comments {
+			if comment.Base {
+				printCommentOverview(*comment, 1)
+			} else {
 				continue
 			}
-			fmt.Printf("%s commented (%s) :\n", *comment.User.DisplayName, resolvedText)
-			fmt.Printf("%s\n", *comment.Content.Raw)
-			fmt.Printf("-------------------------------------------\n")
+			var status string
+			if comment.Resolved {
+				status = "resolved"
+			} else {
+				status = "pending"
+			}
+			fmt.Printf("  status: %s\n", status)
+			fmt.Println("  -------------------------------------------------")
+		}
+		fmt.Println("Inline Comments: ")
+		for _, comment := range inlineComments {
+			if comment.Base {
+				fmt.Printf("  file: %s\n", *comment.Path)
+				printCommentOverview(*comment, 1)
+			} else {
+				continue
+			}
+			var status string
+			if comment.Resolved {
+				status = "resolved"
+			} else {
+				status = "pending"
+			}
+			fmt.Printf("  status: %s\n", status)
+			fmt.Println("  -------------------------------------------------")
 		}
 		return nil
 	},
+}
+
+func printCommentOverview(comment PRComment, level int) {
+	for i := 0; i < level; i++ {
+		fmt.Printf("  ")
+	}
+	fmt.Printf("%v - %s: %s\n", comment.Id, comment.Commenter, comment.Comment)
+	for _, child := range comment.ChildComments {
+		printCommentOverview(*child, level+1)
+	}
 }
