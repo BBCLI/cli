@@ -14,7 +14,7 @@ tasks:
     cmds:
       - go generate ./...
     sources:
-      - app/bbclient/bbclient*
+      - app/bbclient/bbclient.json
       - app/bbclient/config.yaml
     generates:
       - app/bbclient/*.gen.go

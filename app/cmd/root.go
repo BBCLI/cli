@@ -11,11 +11,11 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "bbcli",
-	Short: "BBCLI is a BitBucket Cloud CLI",
+	Use:   "bbc",
+	Short: "BBC is a BitBucket Cloud CLI",
 	Long:  "A fast and flexible CLI for Bitbucket Cloud, so you don't have to deal with the shitty UI",
 	Run: func(cmd *cobra.Command, args []string) {
-		println("Welcome to BBCLI, please use the --help flag to see the available commands")
+		println("Welcome to the BBCLI, please use the --help flag to see the available commands")
 	},
 }
 
