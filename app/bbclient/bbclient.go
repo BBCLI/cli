@@ -5,7 +5,6 @@ import (
 	"context"
 	b64 "encoding/base64"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 
@@ -27,15 +26,7 @@ func init() {
 		}
 		req.Header.Add("Authorization", "Basic "+b64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", config.Authorization.Username, config.Authorization.Password))))
 		return nil
-	}),
-		WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
-			if req.Body != nil {
-				b, _ := io.ReadAll(req.Body)
-				fmt.Println(string(b))
-			}
-
-			return nil
-		}))
+	}))
 	if err != nil {
 		log.Fatal(err)
 	}
