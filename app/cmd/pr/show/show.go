@@ -28,6 +28,7 @@ var Cmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show pull request details",
 	Long:  "usage: bbc pr show <pullrequest-id>",
+	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		prId, err := strconv.Atoi(args[0])
 		if err != nil {
@@ -87,7 +88,7 @@ var Cmd = &cobra.Command{
 					if comment.Parent != nil {
 						if _, ok := inlineComments[*comment.Parent.Id]; ok {
 							if _, ok := inlineComments[*comment.Id]; !ok {
-								p := path.Join(repoPath, comment.Inline.Path) + fmt.Sprintf("%v", comment.Inline.To)
+								p := path.Join(repoPath, comment.Inline.Path) + fmt.Sprintf(":%v", *comment.Inline.To)
 								inlineComments[*comment.Id] = &PRComment{
 									Id:            *comment.Id,
 									Base:          comment.Parent == nil,
@@ -104,7 +105,7 @@ var Cmd = &cobra.Command{
 						}
 					}
 					if _, ok := inlineComments[*comment.Id]; !ok {
-						p := path.Join(repoPath, comment.Inline.Path) + fmt.Sprintf("%v", comment.Inline.To)
+						p := path.Join(repoPath, comment.Inline.Path) + fmt.Sprintf(":%v", *comment.Inline.To)
 						inlineComments[*comment.Id] = &PRComment{
 							Id:            *comment.Id,
 							Base:          comment.Parent == nil,
@@ -199,14 +200,13 @@ var Cmd = &cobra.Command{
 		}
 		return nil
 	},
-	Args: cobra.ExactArgs(1),
 }
 
 func printCommentOverview(comment PRComment, level int) {
 	for i := 0; i < level; i++ {
 		fmt.Printf("  ")
 	}
-	fmt.Printf("%s: %s\n", comment.Commenter, comment.Comment)
+	fmt.Printf("%v - %s: %s\n", comment.Id, comment.Commenter, comment.Comment)
 	for _, child := range comment.ChildComments {
 		printCommentOverview(*child, level+1)
 	}
