@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"cli/app/bbclient"
+	"cli/app/lib/git"
 )
 
 var Cmd = &cobra.Command{
@@ -20,8 +21,13 @@ var Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		//TODO dynamic workspace and repo
-		res, err := bbclient.BbClient.PostRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdApproveWithResponse(context.TODO(), "check24", "tippspiel", prId)
+
+		workspace, repo, err := git.GetGitRemoteDetails()
+		if err != nil {
+			return err
+		}
+
+		res, err := bbclient.BbClient.PostRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdApproveWithResponse(context.TODO(), workspace, repo, prId)
 		if err != nil || res.StatusCode() != 200 {
 			return errors.New("an error occurred")
 		}
