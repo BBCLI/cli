@@ -6,6 +6,7 @@ import (
 	"cli/app/cmd/pr/approve"
 	"cli/app/cmd/pr/create"
 	"cli/app/cmd/pr/list"
+	"cli/app/cmd/pr/merge"
 	"cli/app/cmd/pr/rm"
 
 	"github.com/spf13/cobra"
@@ -24,4 +25,5 @@ func init() {
 	Cmd.AddCommand(rm.Cmd)
 	Cmd.AddCommand(create.Cmd)
 	Cmd.AddCommand(approve.Cmd)
+	Cmd.AddCommand(merge.Cmd)
 }
