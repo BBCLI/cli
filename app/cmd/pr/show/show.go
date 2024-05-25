@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"path"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -94,7 +95,12 @@ var Cmd = &cobra.Command{
 			}
 
 			if isCommentOnFile {
-				fmt.Printf("%s commented on %s:%v (%s) :\n", *comment.User.DisplayName, inline.Path, line, resolvedText)
+				repoPath, err := git.GetGitAbsolutePath()
+				if err != nil {
+					return err
+				}
+				path := path.Join(repoPath, inline.Path)
+				fmt.Printf("%s commented on %s:%v (%s) :\n", *comment.User.DisplayName, path, line, resolvedText)
 				fmt.Printf("%s\n", *comment.Content.Raw)
 				continue
 			}
