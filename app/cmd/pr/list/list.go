@@ -2,14 +2,12 @@ package list
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"os"
-	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 
 	"cli/app/bbclient"
+	"cli/app/lib/format"
 	"cli/app/lib/git"
 )
 
@@ -30,18 +28,8 @@ var Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		prs := *res.JSON200.Values
 
-		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', tabwriter.Debug)
-		fmt.Fprintln(w, fmt.Sprintf("%v\t  %s\t %s\t %s", "id", "title", "commentCount", "repository"))
-		for i := 0; i < len(prs); i++ {
-			pr := prs[i]
-			_, err := fmt.Fprintln(w, fmt.Sprintf("%v\t  %s\t %v\t %s ", *pr.Id, *pr.Title, *pr.CommentCount, *pr.Source.Repository.Name))
-			if err != nil {
-				return err
-			}
-		}
-		err = w.Flush()
+		err = format.Prs(res.JSON200.Values)
 		if err != nil {
 			return err
 		}

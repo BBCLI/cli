@@ -3,13 +3,12 @@ package pr
 import (
 	"context"
 	"fmt"
-	"os"
-	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 
 	"cli/app/bbclient"
 	config2 "cli/app/lib/config"
+	"cli/app/lib/format"
 )
 
 var Cmd = &cobra.Command{
@@ -34,17 +33,8 @@ var Cmd = &cobra.Command{
 		if res.JSON200 == nil {
 			return fmt.Errorf("couldn't fetch PRs")
 		}
-		prs := *res.JSON200.Values
 
-		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', tabwriter.Debug)
-		for i := 0; i < len(prs); i++ {
-			pr := (prs)[i]
-			_, err := fmt.Fprintln(w, fmt.Sprintf("%v\t  %s\t  %s -> %s\t  %s", *pr.Id, *pr.Source.Repository.Name, *pr.Source.Branch.Name, *pr.Destination.Branch.Name, *pr.Title))
-			if err != nil {
-				return err
-			}
-		}
-		err = w.Flush()
+		err = format.Prs(res.JSON200.Values)
 		if err != nil {
 			return err
 		}
