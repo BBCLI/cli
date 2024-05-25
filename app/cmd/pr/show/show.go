@@ -34,10 +34,7 @@ var Cmd = &cobra.Command{
 			return err
 		}
 
-		prId = 1197
 		workspace, repo, err := git.GetGitRemoteDetails()
-		workspace = "check24"
-		repo = "tippspiel"
 		if err != nil {
 			return err
 		}
