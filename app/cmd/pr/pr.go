@@ -3,6 +3,7 @@ package pr
 import (
 	"fmt"
 
+	"cli/app/cmd/pr/approve"
 	"cli/app/cmd/pr/create"
 	"cli/app/cmd/pr/list"
 	"cli/app/cmd/pr/rm"
@@ -22,4 +23,5 @@ func init() {
 	Cmd.AddCommand(list.Cmd)
 	Cmd.AddCommand(rm.Cmd)
 	Cmd.AddCommand(create.Cmd)
+	Cmd.AddCommand(approve.Cmd)
 }
