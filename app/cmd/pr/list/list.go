@@ -21,7 +21,7 @@ var Cmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		state := bbclient.OPEN
 		params := bbclient.GetRepositoriesWorkspaceRepoSlugPullrequestsParams{
-			State: &state,
+			State: (*bbclient.GetRepositoriesWorkspaceRepoSlugPullrequestsParamsState)(&state),
 		}
 		workspace, repo, err := git.GetGitRemoteDetails()
 		if err != nil {
