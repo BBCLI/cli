@@ -3,6 +3,7 @@ package create
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -19,13 +20,23 @@ import (
 var Cmd = &cobra.Command{
 	Use:     "create",
 	Short:   "create a pull request",
-	Long:    "usage: pr create <origin-branch> <destination-branch>",
-	Args:    cobra.ExactArgs(2),
+	Long:    "usage: pr create <origin-branch> <destination-branch> | pr create <destination-branch>",
+	Args:    cobra.RangeArgs(1, 2),
 	Aliases: []string{"new"},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		origin := args[0]
-		dest := args[1]
-
+		var origin, dest string
+		if len(args) == 1 {
+			dest = args[0]
+			currentBranch, err := git.GetCurrentBranch()
+			if err != nil {
+				fmt.Println("Error Reading current Branch")
+				return nil
+			}
+			origin = currentBranch
+		} else {
+			origin = args[0]
+			dest = args[1]
+		}
 		currentUser, err := user.CurrentUser()
 		if err != nil {
 			log.Fatal("Error while fetching user")
@@ -98,9 +109,11 @@ var Cmd = &cobra.Command{
 		res, err := bbclient.BbClient.PostRepositoriesWorkspaceRepoSlugPullrequestsWithResponse(context.TODO(), workspace, repo, req)
 
 		if err != nil || res.StatusCode() != 201 {
+			jsonBytes, _ := json.Marshal(res.JSON400)
+			fmt.Println(string(jsonBytes))
 			return errors.New(fmt.Sprintf("Error while creating requesting the bbc api! status: %v", res.StatusCode()))
 		}
-		fmt.Println("Pr Created!")
+		fmt.Printf("PR Created! Link: %s\n", *res.JSON201.Links.Html.Href)
 		return nil
 	},
 }
