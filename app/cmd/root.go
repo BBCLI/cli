@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 
 	initialize "cli/app/cmd/init"
-	"cli/app/cmd/me"
 	"cli/app/cmd/pr"
 )
 
@@ -20,7 +19,6 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(me.Cmd)
 	rootCmd.AddCommand(pr.Cmd)
 	rootCmd.AddCommand(initialize.Cmd)
 }

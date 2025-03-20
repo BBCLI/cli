@@ -111,7 +111,6 @@ func createWithoutFileContext(workspace string, repo string, prId int, content *
 			Raw: content,
 		},
 	})
-	fmt.Printf("%s", string(res.Body))
 	if err != nil || res.StatusCode() != http.StatusOK {
 		return err
 	}
