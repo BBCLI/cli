@@ -7,6 +7,7 @@ import (
 	"cli/app/cmd/pr/diff"
 	"cli/app/cmd/pr/list"
 	"cli/app/cmd/pr/merge"
+	"cli/app/cmd/pr/open"
 	"cli/app/cmd/pr/show"
 
 	"github.com/spf13/cobra"
@@ -25,4 +26,5 @@ func init() {
 	Cmd.AddCommand(diff.Cmd)
 	Cmd.AddCommand(show.Cmd)
 	Cmd.AddCommand(comment.Cmd)
+	Cmd.AddCommand(open.Cmd)
 }
