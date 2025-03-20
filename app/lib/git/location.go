@@ -64,3 +64,13 @@ func promptForWorkspaceAndRepo() (string, string) {
 	fmt.Scanln(&repo)
 	return workspace, repo
 }
+
+func GetCurrentBranch() (string, error) {
+	cmd := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD")
+	output, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+	ret, _ := strings.CutSuffix(string(output), "\n")
+	return ret, nil
+}
