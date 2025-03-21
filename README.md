@@ -43,3 +43,5 @@ password: <bitbucket app password> (https://bitbucket.org/account/settings/app-p
 ### MISC
 - `bbc init` - Configure your access
 - `bbc me` - Show your user information
+
+[TODO](docs/todo.md)
