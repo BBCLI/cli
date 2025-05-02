@@ -3,8 +3,9 @@
 ## Commands
 
 - [ ] `bbc repo` - Info about current repository
-- [ ]  `bbc repo open` - Open a pull request in the browser
-- [ ] `bbc pr comment show {pr id}` - Show comments on a pull request
+- [x]  `bbc repo open` - Open a pull request in the browser
+- [ ]  `bbc pr requestchanges` - Request Changes
+- [ ]  `bbc pr comment like` - like a comment
 
 ### ME
 
